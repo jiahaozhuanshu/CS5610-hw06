@@ -1,0 +1,16 @@
+[Unit]
+Description=Lens Photo Sharing
+
+[Service]
+Type=simple
+User=timesheets
+Group=timesheets
+Restart=on-failure
+Environment=MIX_ENV=prod "PORT=4678"
+Environment=LANG=en_US.UTF-8
+
+WorkingDirectory=/home/timesheets/CS5610-hw06/hw06timesheets/timesheets
+ExecStart=/bin/bash /home/timesheets/CS5610-hw06/hw06timesheets/timesheets/start.sh
+
+[Install]
+WantedBy=multi-user.target
