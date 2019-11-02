@@ -27,7 +27,7 @@ defmodule Timesheets.Sheets.Sheet do
 
   def valid_hours(attrs) do
     if (attrs["tasks"] == nil) do
-       IO.inspect("nil")
+      
        false
        
     end 
@@ -35,8 +35,8 @@ defmodule Timesheets.Sheets.Sheet do
 	|> Map.values()
 	|> Enum.map(fn x->x["hours"] end)
     	|> Enum.map(fn x ->{n, ""} = Integer.parse(x); n end)
-        |> Enum.reduce(fn(x, acc) ->x+acc end) 
+        |> Enum.reduce(fn(x, acc) -> x + acc end) 
 
-    ret <= 8
+    ret <= 6
    end  
 end

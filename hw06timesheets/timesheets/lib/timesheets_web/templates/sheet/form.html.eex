@@ -28,7 +28,7 @@ Username: <%=@current_user.name%>
   <%= inputs_for f, :tasks, fn p -> %>
    <div class="row">
     <div class="col-2">
-      <%= select p, :task, [nil|@jobs_list] %>
+      <%= select p, :task, [nil|@jobList] %>
       <%= error_tag p, :hours %>
     </div>
     <div class="col-md-auto">

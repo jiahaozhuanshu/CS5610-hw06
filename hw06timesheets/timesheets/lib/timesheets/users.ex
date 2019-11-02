@@ -68,9 +68,9 @@ defmodule Timesheets.Users do
   end
   
 
-  def get_manager_email(manager_email) do
+  def get_manager_email(email) do
     Repo.all from s in User, 
-	where: s.manager_email == ^manager_email 
+	where: s.manager_email == ^email 
 
   end 
 

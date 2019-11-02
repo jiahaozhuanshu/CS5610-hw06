@@ -10,63 +10,63 @@ defmodule TimesheetsWeb.SheetController do
   alias Timesheets.Users
 
   def index(conn, _params) do
-    if (!conn.assigns[:current_user].is_manager) do
-      sheets = Sheets.get_sheet_by_user(conn.assigns[:current_user].id)
-      render(conn, "index.html", sheets: sheets)
-    else
-      IO.inspect("is manager") 
+    if (conn.assigns[:current_user].is_manager) do
       workers = Users.get_manager_email(conn.assigns[:current_user].email)
-      IO.inspect(workers)
-     sheets = Enum.concat(Enum.map(workers, fn x->Sheets.get_sheet_by_user(x.id) end))
-      IO.inspect(sheets)
-      render(conn, "index.html", sheets: sheets)
+      timesheets = Enum.concat(Enum.map(workers, fn x->Sheets.get_sheet_by_user(x.id) end))
+      render(conn, "index.html", timesheets: timesheets)
+    else
+      timesheets = Sheets.get_sheet_by_user(conn.assigns[:current_user].id)
+      render(conn, "index.html", timesheets: timesheets)
+
     end
   end
 
   def new(conn, _params) do
-    changeset = Sheets.change_sheet(%Sheet{tasks: List.duplicate(%Timesheets.Tasks.Task{}, 8)})
+
+
     query = from job in Timesheets.Jobs.Job, select: job.jobcode
-    jobs_list = Repo.all(query)
-    render(conn, "new.html", changeset: changeset, jobs_list: jobs_list)
+    changeset = Sheets.change_sheet(%Sheet{tasks: List.duplicate(%Timesheets.Tasks.Task{}, 8)})
+    
+
+
+    jobList = Repo.all(query)
+    render(conn, "new.html", changeset: changeset, jobList: jobList)
   end
 
-  def create(conn, %{"sheet" => sheet_params}) do
-    sheet_params = Map.put(sheet_params, "worker_id", conn.assigns[:current_user].id)
+  def create(conn, %{"sheet" => timesheets}) do
+    timesheets = Map.put(timesheets, "worker_id", conn.assigns[:current_user].id)
     query = from job in Timesheets.Jobs.Job, select: job.jobcode
-    jobs_list = Repo.all(query)
-    case Sheets.create_sheet(sheet_params) do
+    jobList = Repo.all(query)
+    case Sheets.create_sheet(timesheets) do
       {:ok, sheet} ->
-       IO.inspect(sheet_params)
         conn
         |> put_flash(:info, "Sheet created successfully.")
-	 |> redirect(to: Routes.sheet_path(conn, :show, sheet))
+	|> redirect(to: Routes.sheet_path(conn, :show, sheet))
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        IO.inspect(changeset)
-        render(conn, "new.html", changeset: changeset, jobs_list: jobs_list)
+        render(conn, "new.html", changeset: changeset, jobList: jobList)
     end
   end
 
   def show(conn, %{"id" => id}) do
-    sheet = Sheets.get_sheet!(id)
-    sheet_id = sheet.id
-    tasks = Timesheets.Tasks.get_tasks_by_sheet_id(sheet_id)
-    IO.inspect(tasks)
-    render(conn, "show.html", sheet: sheet, tasks: tasks)
+    timesheets = Sheets.get_sheet!(id)
+    stid = timesheets.id
+    tasks = Timesheets.Tasks.get_tasks_by_sheet_id(stid)
+    render(conn, "show.html", timesheets: timesheets, tasks: tasks)
   end
 
   def edit(conn, %{"id" => id}) do
-    sheet = Sheets.get_sheet!(id)
+    timesheets = Sheets.get_sheet!(id)
     query = from job in Timesheets.Jobs.Job, select: job.jobcode
-    jobs_list = Repo.all(query)
-    changeset = Sheets.change_sheet(sheet)
-    render(conn, "edit.html", sheet: sheet, changeset: changeset, jobs_list: jobs_list)
+    jobList = Repo.all(query)
+    changeset = Sheets.change_sheet(timesheets)
+    render(conn, "edit.html", timesheets: timesheets, changeset: changeset, jobList: jobList)
   end
 
-  def update(conn, %{"id" => id, "sheet" => sheet_params}) do
+  def update(conn, %{"id" => id, "sheet" => timesheets}) do
     sheet = Sheets.get_sheet!(id)
 
-    case Sheets.update_sheet(sheet, sheet_params) do
+    case Sheets.update_sheet(sheet, timesheets) do
       {:ok, sheet} ->
         conn
         |> put_flash(:info, "Sheet updated successfully.")
