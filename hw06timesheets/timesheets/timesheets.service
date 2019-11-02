@@ -1,5 +1,5 @@
 [Unit]
-Description=Lens Photo Sharing
+Description=Timesheets APP 
 
 [Service]
 Type=simple
