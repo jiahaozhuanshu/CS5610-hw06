@@ -66,8 +66,17 @@ defmodule Timesheets.Users do
   def get_user_by_email(email) do
     Repo.get_by(User, email: email)
   end
+  
+
+  def get_manager_email(manager_email) do
+    Repo.all from s in User, 
+	where: s.manager_email == ^manager_email 
+
+  end 
 
   def get_user(id), do: Repo.get(User, id)
+
+  def get_user!(id), do: Repo.get!(User, id)
 
   @doc """
   Updates a user.
@@ -115,4 +124,5 @@ defmodule Timesheets.Users do
   def change_user(%User{} = user) do
     User.changeset(user, %{})
   end
+
 end

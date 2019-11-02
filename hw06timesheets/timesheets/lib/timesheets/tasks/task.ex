@@ -1,0 +1,18 @@
+defmodule Timesheets.Tasks.Task do
+  use Ecto.Schema
+  import Ecto.Changeset
+
+  schema "tasks" do
+    field :hours, :integer
+    field :notes, :string
+
+    timestamps()
+  end
+
+  @doc false
+  def changeset(task, attrs) do
+    task
+    |> cast(attrs, [:hours, :notes])
+    |> validate_required([:hours, :notes])
+  end
+end

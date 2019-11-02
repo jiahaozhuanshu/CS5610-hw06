@@ -8,38 +8,30 @@
     <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css") %>"/>
   </head>
   <body>
-      <div class="container">
+    <div class="container">
       <nav class="navbar navbar-expand-sm navbar-light bg-white">
         <div class="col-4">
-          <a class="navbar-brand" href="#">Timesheets</a>
+	  <span class="navbar-brand">Timesheets</span>
         </div>
-
-	<div class="col-4">
-          <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-              <a class="nav-link" href="#">All Photos</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Your Photos</a>
-            </li>
-          </ul>
+        <div class="col-4">
+	<%= if @current_user do %>
+          <%= if !@current_user.is_manager do %>
+            <%= link("NewTimesheet", to: Routes.sheet_path(@conn, :new)) %>
+          <% end %>
+	<% end %>
         </div>
-
-	<div class="col-4 text-light">
+        <div class="col-4 text-light">
           <%= if @current_user do %>
-            User: <%= @current_user.name %>
+	  User: <%= link(@current_user.name,
+              to: Routes.user_path(@conn, :show, @current_user)) %>
             (<%= link("Logout", to: Routes.session_path(@conn, :delete),
               method: :delete) %>)
           <% else %>
-            <%= link("Login", to: Routes.session_path(@conn, :new)) %>
+            <%= link("Login", to: Routes.session_path(@conn, :new)) %> |
+	    <%= link("Register", to: Routes.user_path(@conn, :new)) %>
           <% end %>
         </div>
-
-
-
-    
-
-
+      </nav>
 
       <div class="row">
         <div class="col-12">
@@ -53,6 +45,7 @@
           <% end %>
         </div>
       </div>
+
       <%= render @view_module, @view_template, assigns %>
     </div>
     <script type="text/javascript" src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>

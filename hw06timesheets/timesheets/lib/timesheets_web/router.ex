@@ -18,9 +18,10 @@ defmodule TimesheetsWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
-    resources "/users", UserController
+    resources "/users", UserController, only: [:new, :create, :show, :index]
     resources "/sessions", SessionController, only: [:new, :create, :delete], singleton: true
     resources "/jobs", JobController
+    resources "/sheets", SheetController, only: [:new, :create, :index, :show, :update, :edit] 
   
   end
 
